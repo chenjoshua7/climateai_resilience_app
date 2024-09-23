@@ -113,5 +113,5 @@ if clicked_data and clicked_data['last_object_clicked']:
            abs(clicked_lon - row['longitude']) <= long_threshold:
             # If coordinates are similar, display the reasoning
             col3.subheader(f"Parking Lot")
-            col3.write(f"**Proposed Remedy** {row['chosen_response']}")
+            col3.write(f"**Proposed Remedy:** {row['chosen_response']}")
             col3.write(f"**Reasoning:** {row['reasoning']}")
