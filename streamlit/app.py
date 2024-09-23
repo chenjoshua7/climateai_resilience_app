@@ -64,7 +64,7 @@ def generate_popup_html(features):
 
     return html_content
 
-file_path = os.path.join(os.getcwd(), 'data.csv')
+file_path = os.path.join(os.getcwd(), 'streamlit','data.csv')
 data = pd.read_csv(file_path).iloc[:,1:]
 
 header_page()
