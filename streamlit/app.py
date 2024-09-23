@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 import folium
 import pandas as pd
-from markupsafe import Markup
+import os
 
 st.set_page_config(
     page_title="Resilience",
@@ -64,8 +64,8 @@ def generate_popup_html(features):
 
     return html_content
 
-
-data = pd.read_csv("data.csv").iloc[:,1:]
+file_path = os.path.join(os.getcwd(), 'data.csv')
+data = pd.read_csv(file_path).iloc[:,1:]
 
 header_page()
 
