@@ -65,7 +65,7 @@ def generate_popup_html(features):
     return html_content
 
 
-data = pd.read_csv("final.csv").iloc[:,1:]
+data = pd.read_csv("data.csv").iloc[:,1:]
 
 header_page()
 
