@@ -43,7 +43,7 @@ def generate_popup_html(features):
         <p style="margin-top: 0; margin-bottom: 10px;"><strong>Proposed Remedy: {name}</strong></p>
         
         <div style="background-color: #f0f0f0; padding: 8px; border-radius: 5px; margin-bottom: 10px;">
-            <span style="font-size: 1.1em; font-weight: bold;">Cost: ${cost:,}</span>
+            <span style="font-size: 1.1em; font-weight: bold;">Estimated Cost: ${cost:,}</span>
         </div>
 
         <div style="background-color: #e6f7ff; padding: 8px; border-radius: 5px; margin-bottom: 10px;">
