@@ -1,0 +1,5 @@
+This demo is the final submission for the September 2024 Climate AI Hackathon, an event bringing together individuals passionate about using new technologies to address the current climate challenges.
+
+The Resilience App is designed to leverage geospatial data and Generative AI to assist policymakers and green developers in identifying key areas for sustainable development, community building, and financially efficient resource allocation. This demo includes features such as air quality, district median income, and heat vulnerability, with a focus on analyzing parking lots as potential development areas.
+
+Please note: This is a demo and should not be used for actual decision-making. Its purpose is to explore the potential of Generative AI in tasks like this. Furthermore, lived experience is irreplaceable—community members are always the best source of insight for community-building decisions. We hope this app contributes to the ongoing discussion about the role of Generative AI in these processes.
