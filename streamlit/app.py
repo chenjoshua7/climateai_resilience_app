@@ -12,8 +12,6 @@ def header_page():
     st.markdown("<h1 style='text-align: center; padding-top:0px; padding-bottom: 5px;'>Resilience</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center; padding-bottom: 20px;'>AI for More Human Cities</h4>", unsafe_allow_html=True)
 
-
-
 def generate_popup_html(features):
     name = features["chosen_response"]
     cost = features["suggested_price"]
@@ -64,9 +62,18 @@ def generate_popup_html(features):
 
     return html_content
 
-file_path = os.path.join(os.getcwd(), 'streamlit','data.csv')
+file_path = os.path.join(os.getcwd(), 'streamlit', 'data.csv')
 data = pd.read_csv(file_path).iloc[:,1:]
+with st.sidebar:
+    st.markdown("<h1 style='text-align: center; padding: 20px 0;'>Filters</h1>", unsafe_allow_html=True)
+    c1, c2= st.columns(2)
+    remedies = st.multiselect("Remedies", data["chosen_response"].value_counts().keys())
 
+if not remedies:
+    remedies = data["chosen_response"].value_counts().keys()
+
+data = data[data["chosen_response"].isin(remedies)]
+st.write(data)
 header_page()
 
 data.loc[data["chosen_response"]=="Urban Orchards", "chosen_response"] = "Urban Orchard"
@@ -83,7 +90,7 @@ color_map = {
 start_coords = (40.6399, -73.8554)
 m = folium.Map(location=start_coords, zoom_start=11.5, control_scale=True)
 
-space, col2, col3 = st.columns([0.5, 3, 1])
+space, col2, col3 = st.columns([0.2, 3, 1])
 
 for _, row in data.iterrows():
     popup_html = generate_popup_html(row)
@@ -115,3 +122,5 @@ if clicked_data and clicked_data['last_object_clicked']:
             col3.subheader(f"Parking Lot")
             col3.write(f"**Proposed Remedy:** {row['chosen_response']}")
             col3.write(f"**Reasoning:** {row['reasoning']}")
+
+
