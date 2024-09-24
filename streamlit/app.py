@@ -3,6 +3,8 @@ from streamlit_folium import st_folium
 import folium
 import pandas as pd
 import os
+import geopandas as gpd
+from shapely.geometry import mapping
 
 st.set_page_config(
     page_title="Resilience",
@@ -64,6 +66,17 @@ def generate_popup_html(features):
 
 file_path = os.path.join(os.getcwd(),'streamlit', 'data.csv')
 data = pd.read_csv(file_path).iloc[:,1:]
+
+## data with gpt responses
+data.loc[data["chosen_response"]=="Urban Orchards", "chosen_response"] = "Urban Orchard"
+data = gpd.GeoDataFrame(data)
+
+## geospatial data
+shp_data = gpd.read_file(os.path.join(os.getcwd(),'streamlit','final_data','final_data.shp')).iloc[:, 1:]
+shp_data = shp_data.sort_values("area", ascending = False).reset_index()
+data["geometry"] = shp_data.loc[:100, "geometry"]
+
+
 with st.sidebar:
     st.markdown("<h1 style='text-align: center; padding: 20px 0;'>Filters</h1>", unsafe_allow_html=True)
     c1, c2= st.columns(2)
@@ -74,10 +87,7 @@ if not remedies:
 
 data = data[data["chosen_response"].isin(remedies)]
 
-
 header_page()
-
-data.loc[data["chosen_response"]=="Urban Orchards", "chosen_response"] = "Urban Orchard"
 
 color_map = {
     "Urban Orchard": "green",
@@ -99,6 +109,15 @@ for _, row in data.iterrows():
         location= (row.latitude,row.longitude),  # Replace with actual coordinates
         popup=folium.Popup(popup_html, max_width=400),
         icon=folium.Icon(color=color_map[row["chosen_response"]], icon="info-sign"),
+    ).add_to(m)
+    
+    geojson_data = mapping(row.geometry)  # Convert geometry to GeoJSON format
+    folium.GeoJson(
+        data=geojson_data,
+        style_function=lambda x: {
+            'color': 'black',
+            'weight': 3
+        }
     ).add_to(m)
     
 with col2:
