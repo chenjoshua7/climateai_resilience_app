@@ -62,7 +62,7 @@ def generate_popup_html(features):
 
     return html_content
 
-file_path = os.path.join(os.getcwd(), 'streamlit', 'data.csv')
+file_path = os.path.join(os.getcwd(),'streamlit', 'data.csv')
 data = pd.read_csv(file_path).iloc[:,1:]
 with st.sidebar:
     st.markdown("<h1 style='text-align: center; padding: 20px 0;'>Filters</h1>", unsafe_allow_html=True)
@@ -73,7 +73,8 @@ if not remedies:
     remedies = data["chosen_response"].value_counts().keys()
 
 data = data[data["chosen_response"].isin(remedies)]
-st.write(data)
+
+
 header_page()
 
 data.loc[data["chosen_response"]=="Urban Orchards", "chosen_response"] = "Urban Orchard"
