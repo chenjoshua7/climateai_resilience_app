@@ -113,7 +113,7 @@ data = data[data["chosen_response"].isin(remedies)]
 
 header_page()
 
-start_coords = (40.6399, -73.8554)
+start_coords = (40.645717282767706, -73.95609863714381)
 m = folium.Map(location=start_coords, zoom_start=11.5, control_scale=True)
 
 space, col2, col3 = st.columns([0.2, 3, 1])
@@ -147,7 +147,6 @@ if not clicked_data['last_object_clicked']:
     col3.subheader("Select an Opportunity Area for More Information")
     
 if clicked_data and clicked_data['last_object_clicked']:
-    st.write(True)
     clicked_lat = clicked_data['last_object_clicked']["lat"]
     clicked_lon = clicked_data['last_object_clicked']["lng"]
 
@@ -165,3 +164,18 @@ if clicked_data and clicked_data['last_object_clicked']:
             col3.write(f"**Reasoning:** {row['reasoning']}")
 
 
+with st.expander(label="About This Project"):
+    st.write("""
+        This demo is the final submission for the September 2024 Climate AI Hackathon, an event bringing 
+        together individuals passionate about using new technologies to address the current climate challenges.
+
+        The Resilience App is designed to leverage geospatial data and Generative AI to assist policymakers 
+        and green developers in identifying key areas for sustainable development, community building, and 
+        financially efficient resource allocation. This demo includes features such as air quality, district 
+        median income, and heat vulnerability, with a focus on analyzing parking lots as potential development areas.
+
+        Please note: This is a demo and should not be used for actual decision-making. Its purpose is to explore 
+        the potential of Generative AI in tasks like this. Furthermore, lived experience is irreplaceable—community 
+        members are always the best source of insight for community-building decisions. We hope this app contributes 
+        to the ongoing discussion about the role of Generative AI in these processes.
+    """)
