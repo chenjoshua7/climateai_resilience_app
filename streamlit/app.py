@@ -14,7 +14,7 @@ color_map = {
     "Urban Orchard": "orange",      
     "Community Garden": "green",    
     "Urban Wetlands": "blue",
-    "Solar Farm": "yellow",  
+    "Solar Farm": "beige",  
     "Cooling Station": "lightblue",
     "Pocket Park": "darkgreen"     
 }
