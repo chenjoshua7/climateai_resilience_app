@@ -10,6 +10,28 @@ st.set_page_config(
     page_title="Resilience",
     layout="wide")
 
+color_map = {
+    "Urban Orchard": "orange",      
+    "Community Garden": "green",    
+    "Urban Wetlands": "blue",
+    "Solar Farm": "yellow",  
+    "Cooling Station": "lightblue",
+    "Pocket Park": "darkgreen"     
+}
+
+def generate_legend_html(color_map):
+    legend_html = ""
+    for label, color in color_map.items():
+        legend_html += f"""
+        <li style="display: flex; align-items: center; margin-bottom: 8px;">
+            <div style="width: 15px; height: 15px; background-color: {color}; margin-right: 10px; border: 1px solid black;"></div>
+            <span>{label}</span>
+        </li>
+        """
+    legend_html += "</ul></div>"
+    
+    return legend_html
+
 def header_page():
     st.markdown("<h1 style='text-align: center; padding-top:0px; padding-bottom: 5px;'>Resilience</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center; padding-bottom: 20px;'>AI for More Human Cities</h4>", unsafe_allow_html=True)
@@ -64,7 +86,7 @@ def generate_popup_html(features):
 
     return html_content
 
-file_path = os.path.join(os.getcwd(),'streamlit', 'data.csv')
+file_path = os.path.join(os.getcwd(), 'streamlit','data.csv')
 data = pd.read_csv(file_path).iloc[:,1:]
 
 ## data with gpt responses
@@ -72,15 +94,17 @@ data.loc[data["chosen_response"]=="Urban Orchards", "chosen_response"] = "Urban 
 data = gpd.GeoDataFrame(data)
 
 ## geospatial data
-shp_data = gpd.read_file(os.path.join(os.getcwd(),'streamlit','final_data','final_data.shp')).iloc[:, 1:]
+shp_data = gpd.read_file(os.path.join(os.getcwd(),'streamlit', 'final_data','final_data.shp')).iloc[:, 1:]
 shp_data = shp_data.sort_values("area", ascending = False).reset_index()
 data["geometry"] = shp_data.loc[:100, "geometry"]
 
-
+## Filter sidebar
 with st.sidebar:
     st.markdown("<h1 style='text-align: center; padding: 20px 0;'>Filters</h1>", unsafe_allow_html=True)
     c1, c2= st.columns(2)
     remedies = st.multiselect("Remedies", data["chosen_response"].value_counts().keys())
+    legend_html = generate_legend_html(color_map)
+    st.markdown(legend_html, unsafe_allow_html=True)
 
 if not remedies:
     remedies = data["chosen_response"].value_counts().keys()
@@ -89,29 +113,27 @@ data = data[data["chosen_response"].isin(remedies)]
 
 header_page()
 
-color_map = {
-    "Urban Orchard": "green",
-    "Community Garden": "blue",
-    "Urban Wetlands": "brown",
-    "Solar Farm": "darkred",
-    "Cooling Station":"beige",
-    "Pocket Park": "darkpurple"
-    }
+
+
 
 start_coords = (40.6399, -73.8554)
 m = folium.Map(location=start_coords, zoom_start=11.5, control_scale=True)
 
 space, col2, col3 = st.columns([0.2, 3, 1])
 
+
+
 for _, row in data.iterrows():
+    ## Get html tag
     popup_html = generate_popup_html(row)
+    #marker
     folium.Marker(
-        location= (row.latitude,row.longitude),  # Replace with actual coordinates
+        location= (row.latitude,row.longitude),
         popup=folium.Popup(popup_html, max_width=400),
         icon=folium.Icon(color=color_map[row["chosen_response"]], icon="info-sign"),
     ).add_to(m)
     
-    geojson_data = mapping(row.geometry)  # Convert geometry to GeoJSON format
+    geojson_data = mapping(row.geometry)
     folium.GeoJson(
         data=geojson_data,
         style_function=lambda x: {
@@ -119,26 +141,28 @@ for _, row in data.iterrows():
             'weight': 3
         }
     ).add_to(m)
-    
+
+
 with col2:
-    clicked_data = st_folium(m, width=1500) 
+    clicked_data = st_folium(m, width=700, height=700) 
 
 if not clicked_data['last_object_clicked']:
     col3.subheader("Select an Opportunity Area for More Information")
     
 if clicked_data and clicked_data['last_object_clicked']:
+    st.write(True)
     clicked_lat = clicked_data['last_object_clicked']["lat"]
     clicked_lon = clicked_data['last_object_clicked']["lng"]
 
     # Define a similarity threshold for latitude and longitude
-    lat_threshold = 0.0001  # Adjust based on your requirements
-    long_threshold = 0.0001  # Adjust based on your requirements
+    lat_threshold = 0.0001
+    long_threshold = 0.0001
 
     # Compare the clicked coordinates with the DataFrame
     for _, row in data.iterrows():
         if abs(clicked_lat - row['latitude']) <= lat_threshold and \
            abs(clicked_lon - row['longitude']) <= long_threshold:
-            # If coordinates are similar, display the reasoning
+            
             col3.subheader(f"Parking Lot")
             col3.write(f"**Proposed Remedy:** {row['chosen_response']}")
             col3.write(f"**Reasoning:** {row['reasoning']}")
