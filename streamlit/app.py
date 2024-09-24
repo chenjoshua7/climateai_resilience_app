@@ -113,9 +113,6 @@ data = data[data["chosen_response"].isin(remedies)]
 
 header_page()
 
-
-
-
 start_coords = (40.6399, -73.8554)
 m = folium.Map(location=start_coords, zoom_start=11.5, control_scale=True)
 
